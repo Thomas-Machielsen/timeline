@@ -1,0 +1,29 @@
+// Sample timeline
+{
+  theme: "roman-empire",
+  items: [
+    {
+      title: "Julio-Claudian dynasty",
+      description: "First Dynasty",
+      causeOfBeginning: "Gradual decline of the Republic",
+      causeOfEnd: "Gradual decline of the empire ",
+      date: {
+        from: "27 BCE", // need to use sensible date for
+        to: "68 CE",
+      },
+      items: [
+        {
+          title: "Augustus",
+          description: "First emperor balbal",
+          causeOfBeginning: "Winning the civil war",
+          causeOfEnd: "Old age",
+          date: {
+            from: "27 BCE",
+            to: "14 CE",
+          },
+          items: [{}],
+        },
+      ],
+    },
+  ],
+}
