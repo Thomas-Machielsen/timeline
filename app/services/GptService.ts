@@ -36,14 +36,12 @@ async function getZoomedTimelineItem(
 
 async function getTitles(): Promise<string[]> {
   const prompt = `Only reply in JSON ${defaultChatMessagesParts.titles}`;
-  const result = await askGTP(prompt);
-  return result;
+  return await askGTP(prompt);
 }
 
 async function getZoomedPeriods(item: TimelineItem): Promise<ZoomPeriod[]> {
   const prompt = `Only reply in JSON Only reply in a JSON array 5 important periods or themes within ${item.title} from ${item.date.from} to ${item.date.to} in json format: "title, date:{from, to}"`;
-  const result = await askGTP(prompt);
-  return result;
+  return await askGTP(prompt);
 }
 
 async function getTimelineItem(title: String): Promise<TimelineItem | null> {
@@ -78,8 +76,9 @@ const askGTP = async (prompt: string) => {
       }),
     });
     const data = await res.json();
-    console.log({data})
-    return JSON.parse(data.choices[0].message.content);
+    const gptReply = JSON.parse(data.choices[0].message.content);
+    console.log({gptReply})
+    return gptReply;
   } catch (error) {
     throw error;
   }

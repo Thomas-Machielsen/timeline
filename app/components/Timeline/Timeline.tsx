@@ -16,9 +16,6 @@ export function Timeline({ item, ...rest }: TimelineProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log("loading url")
-    const res =  fetch('/api/dall-e')
-
     generateImageUrl(item.imageDescriptionForDaliApi).then(url => {
       console.log({result: url})
       setImageUrl(url)

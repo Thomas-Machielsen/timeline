@@ -1,15 +1,12 @@
 
-export async function POST(request: Request) {
-    const apiKey = process.env.API_KEY
-    const prompt = (await request.json()).prompt;
+export async function generateImageUrl(prompt: string) {
     // Send a request to the DALI API to generate an image based on the prompt
-    const response = await fetch("https://api.openai.com/v1/images/generations", {
+    const response = await fetch("/api/dall-e", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${prompt}`,
-        },
         body: JSON.stringify({ prompt: prompt, size: "256x256" }),
     });
-    return await response.json().then( result => result.data[0].url);
+    console.log({response})
+    const url = await response.text();
+    console.log(url)
+    return url;
 }
