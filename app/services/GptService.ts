@@ -1,85 +1,19 @@
-import { TimelineItem, ZoomPeriod } from "../models";
-import { defaultChatMessagesParts } from "../utils/constants";
+import { TimelineItem } from "../models";
 
 export async function getTimelineArray(): Promise<TimelineItem[]> {
-  const titles = await getTitles();
-  if (titles) {
-    const result = await Promise.all(
-      titles.map((title) => getTimelineItem(title))
-    );
-    return result.filter((item) => !!item).map((item) => item as TimelineItem);
-  }
-  return [];
+  // Send a request to the DALI API to generate an image based on the prompt
+  const response = await fetch("/api/gpt/timeline", {
+    method: "POST"
+  })
+  return response.json();
 }
 
 export async function ZoomInTimeLine(
   item: TimelineItem
 ): Promise<TimelineItem[]> {
-  const periods = await getZoomedPeriods(item);
-  console.log("periods", periods);
-  if (periods && periods.length > 0) {
-    const result = await Promise.all(
-      periods.map((period) => getZoomedTimelineItem(period))
-    );
-    return result.filter((item) => !!item).map((item) => item as TimelineItem);
-  }
-  return [];
+  const response = await fetch("/api/gpt/zoom", {
+    method: "POST",
+    body: JSON.stringify(item),
+  });
+  return response.json()
 }
-
-async function getZoomedTimelineItem(
-  period: ZoomPeriod
-): Promise<TimelineItem | null> {
-  return getTimelineItem(
-    `${period.title} in the period from ${period.date.from} to ${period.date.to}`
-  );
-}
-
-async function getTitles(): Promise<string[]> {
-  const prompt = `Only reply in JSON ${defaultChatMessagesParts.titles}`;
-  return await askGTP(prompt);
-}
-
-async function getZoomedPeriods(item: TimelineItem): Promise<ZoomPeriod[]> {
-  const prompt = `Only reply in JSON Only reply in a JSON array 5 important periods or themes within ${item.title} from ${item.date.from} to ${item.date.to} in json format: "title, date:{from, to}"`;
-  return await askGTP(prompt);
-}
-
-async function getTimelineItem(title: String): Promise<TimelineItem | null> {
-  const prompt = `Only reply in JSON ${defaultChatMessagesParts.getItem} ${title} ${defaultChatMessagesParts.jsonformat} ${defaultChatMessagesParts.dateFormats}`;
-  console.log(prompt);
-  const response = await askGTP(prompt);
-  return {
-    ...response,
-    title,
-  };
-}
-
-const askGTP = async (prompt: string) => {
-  try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: "You are a historian who specialises in the ancient world",
-          },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.5,
-        max_tokens: 500,
-      }),
-    });
-    const data = await res.json();
-    const gptReply = JSON.parse(data.choices[0].message.content);
-    console.log({gptReply})
-    return gptReply;
-  } catch (error) {
-    throw error;
-  }
-};

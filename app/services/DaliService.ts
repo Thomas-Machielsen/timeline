@@ -5,8 +5,5 @@ export async function generateImageUrl(prompt: string) {
         method: "POST",
         body: JSON.stringify({ prompt: prompt, size: "256x256" }),
     });
-    console.log({response})
-    const url = await response.text();
-    console.log(url)
-    return url;
+    return await response.text();
 }
