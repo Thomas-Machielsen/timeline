@@ -3,6 +3,7 @@ export type TimelineItem = {
   description: string;
   causeOfBeginning: string;
   causeOfEnd: string;
+  imageDescriptionForDaliApi: string;
   date: {
     from: number;
     to: number;

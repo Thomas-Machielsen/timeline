@@ -3,7 +3,7 @@ import styles from "./page.module.css";
 
 // components
 import { Timeline } from "./components/Timeline/Timeline";
-import { getTimelineArray } from "./services/AIService";
+import { getTimelineArray } from "./services/GptService";
 
 export default async function Home() {
   const timelines = await getTimelineArray();

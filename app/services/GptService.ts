@@ -1,8 +1,6 @@
 import { TimelineItem, ZoomPeriod } from "../models";
 import { defaultChatMessagesParts } from "../utils/constants";
 
-const apiKey = "";
-
 export async function getTimelineArray(): Promise<TimelineItem[]> {
   const titles = await getTitles();
   if (titles) {
@@ -64,7 +62,7 @@ const askGTP = async (prompt: string) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${process.env.API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
@@ -80,6 +78,7 @@ const askGTP = async (prompt: string) => {
       }),
     });
     const data = await res.json();
+    console.log({data})
     return JSON.parse(data.choices[0].message.content);
   } catch (error) {
     throw error;
